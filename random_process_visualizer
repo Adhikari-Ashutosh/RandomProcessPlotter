@@ -1,0 +1,75 @@
+import pygame,sys,time,random
+import numpy as np
+#define screen size
+screen_width_x=500
+screen_width_y=500
+#error checking
+err=pygame.init()
+# if err[1]>0:
+#     print("Error initializing pygame")
+#     sys.exit()
+# else:
+print("Initialized pygame successfully")
+#define colors
+BLACK = (0,0,0)
+WHITE = (255,255,255)
+RED = (255,0,0)
+GREEN = (0,255,0)
+BLUE = (0,0,255)
+YELLOW = (255,255,0)
+#define screen
+screen = pygame.display.set_mode((screen_width_x,screen_width_y))
+#define screen title
+pygame.display.set_caption("Random Process Visualizer")
+#define clock
+clock = pygame.time.Clock()
+#define font
+font = pygame.font.SysFont("arial",25)
+a=100
+w=0.05
+t=np.linspace(0,screen_width_x,10000) #this is the time axis
+tuning_factor_w=0.01
+tuning_factor_a=0.5
+#helper functions
+def draw_point(x,y,color):
+    pygame.draw.circle(screen,color,(x,y),1)  #draw a point at (x,y) with color
+def draw_line(x1,y1,x2,y2,color):
+    pygame.draw.line(screen,color,(x1,y1),(x2,y2),1) #draw a line from (x1,y1) to (x2,y2) with color
+def value_rp(a,w,t):
+    return a*np.sin(w*t)
+#function to write custom text at x,y
+def write_text(text,x,y,color):
+    textsurface = font.render(text, True, color)
+    screen.blit(textsurface,(x,y))
+#main loop
+while True:
+    screen.fill(BLACK)
+    
+    #Checking events
+    for eve in pygame.event.get():
+        if eve.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif eve.type==pygame.KEYDOWN:
+            if eve.key==pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+            if eve.key == pygame.K_DOWN:
+                a-=tuning_factor_a
+            if eve.key == pygame.K_UP:
+                a+=tuning_factor_a
+            if eve.key == pygame.K_LEFT:
+                w-=tuning_factor_w
+            if eve.key == pygame.K_RIGHT:
+                w+=tuning_factor_w
+    
+    for x in t:
+        y=value_rp(a,w,x)
+        draw_point(x,y+screen_width_y/2,BLUE)
+    draw_line(0,screen_width_y/2,screen_width_x,screen_width_y/2,WHITE)
+    draw_line(screen_width_x/2,0,screen_width_x/2,screen_width_y,WHITE)
+    write_text("a="+str(a),10,10,WHITE)
+    write_text("w="+str(w),10,30,WHITE)
+    write_text("f(t)="+str(a)+"*sin("+str(w)+"*t)",10,50,WHITE)
+    pygame.display.update()
+    
