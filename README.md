@@ -10,3 +10,4 @@ Introducing the Random Process Plotter: A program designed to concoct a mixture 
 - Pygame (2.1.2)
 ## Running:-
 After installing the dependencies, simply execute the file.
+python -u "directory of wherever the program is at"
